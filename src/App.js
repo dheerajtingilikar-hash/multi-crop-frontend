@@ -1,31 +1,38 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./components/Home";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./components/Login";
-import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
+import History from "./components/History";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  // ✅ Check token on app load
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setIsLoggedIn(true);
-    }
-  }, []);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
 
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        {/* Default route */}
+        <Route
+          path="/"
+          element={isLoggedIn ? <Navigate to="/dashboard" /> : <Navigate to="/login" />}
+        />
+
+        {/* Login */}
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
-        <Route path="/register" element={<Register />} />
+
+        {/* Dashboard */}
         <Route
           path="/dashboard"
           element={<Dashboard isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />}
         />
+
+        {/* History */}
+        <Route
+          path="/history"
+          element={<History isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />}
+        />
+
+        {/* Catch-all → redirect */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
   );
