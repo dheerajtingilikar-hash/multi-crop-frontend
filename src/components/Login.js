@@ -1,48 +1,53 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-function Login() {
+function Login({ setIsLoggedIn }) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("https://multi-crop-plant.onrender.com/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ username, password }),
+     });
+
+
+      if (!res.ok) throw new Error("Login failed");
+
+      const data = await res.json();
+      localStorage.setItem("token", data.access_token); // ✅ Save token
+      setIsLoggedIn(true); // ✅ Update state
+      navigate("/dashboard"); // ✅ Redirect to dashboard
+    } catch (err) {
+      alert("Invalid credentials");
+    }
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <motion.div
-        className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md"
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <h2 className="text-2xl font-bold text-center mb-6">🌿 Login</h2>
-        <form className="space-y-4">
-          <div>
-            <label className="block text-gray-700">Email</label>
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-green-400"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700">Password</label>
-            <input
-              type="password"
-              placeholder="Enter your password"
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-green-400"
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-green-600 text-white py-2 rounded-md font-semibold hover:bg-green-700 transition"
-          >
-            Login
-          </button>
-        </form>
-        <p className="mt-4 text-center text-gray-600">
-          Don’t have an account?{" "}
-          <a href="/register" className="text-green-600 font-semibold hover:underline">
-            Register
-          </a>
-        </p>
-      </motion.div>
-    </div>
+    <form onSubmit={handleLogin} className="p-6 max-w-sm mx-auto bg-white shadow-lg rounded-lg">
+      <h2 className="text-xl font-bold mb-4">Login</h2>
+      <input
+        type="text"
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        className="w-full p-2 mb-3 border rounded"
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="w-full p-2 mb-3 border rounded"
+      />
+      <button type="submit" className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">
+        Login
+      </button>
+    </form>
   );
 }
 

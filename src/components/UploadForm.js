@@ -4,55 +4,45 @@ function UploadForm({ setResults }) {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!file) {
-      alert("Please select an image");
-      return;
-    }
+    if (!file) return;
 
     const formData = new FormData();
     formData.append("file", file);
 
     setLoading(true);
+
     try {
-      const response = await fetch("http://127.0.0.1:8000/predict", {
+      const response = await fetch("https://your-backend-url.onrender.com/predict", {
         method: "POST",
         body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      }
-
       const data = await response.json();
       setResults(data);
     } catch (error) {
-      console.error("Upload error:", error);
-      alert("Something went wrong! Please try again.");
+      console.error("Error uploading file:", error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="upload-form">
-      <form onSubmit={handleSubmit}>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          disabled={loading}
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? "Analyzing..." : "Upload & Predict"}
-        </button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => setFile(e.target.files[0])}
+      />
+      <button
+        type="submit"
+        disabled={loading}
+        className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+      >
+        {loading ? "Predicting..." : "Upload & Predict"}
+      </button>
+    </form>
   );
 }
 

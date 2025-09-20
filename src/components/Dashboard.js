@@ -1,13 +1,30 @@
-import React, { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import UploadForm from "./UploadForm";
 import Results from "./Results";
 import History from "./History";
 
 function Dashboard({ isLoggedIn, setIsLoggedIn }) {
   const [results, setResults] = useState(null);
+  const navigate = useNavigate();
 
-  if (!isLoggedIn) return <Navigate to="/login" />; // redirect if not logged in
+  // ✅ Check token on mount
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [setIsLoggedIn]);
+
+  if (!isLoggedIn) return <Navigate to="/login" replace />;
+
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // ✅ Clear token
+    setIsLoggedIn(false);
+    navigate("/login");
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -18,7 +35,10 @@ function Dashboard({ isLoggedIn, setIsLoggedIn }) {
           <li><Link to="/dashboard">Predict</Link></li>
           <li><Link to="/history">History</Link></li>
           <li>
-            <button onClick={() => setIsLoggedIn(false)} className="hover:text-yellow-300">
+            <button
+              onClick={handleLogout}
+              className="hover:text-yellow-300"
+            >
               Logout
             </button>
           </li>
