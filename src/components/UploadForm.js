@@ -2,45 +2,33 @@ import React, { useState } from "react";
 
 function UploadForm({ setResults }) {
   const [file, setFile] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!file) return;
+    if (!file) return alert("Please upload an image");
 
     const formData = new FormData();
     formData.append("file", file);
 
-    setLoading(true);
+    const token = localStorage.getItem("token");
 
-    try {
-      const response = await fetch("https://your-backend-url.onrender.com/predict", {
-        method: "POST",
-        body: formData,
-      });
+    const res = await fetch("https://multi-crop-plant.onrender.com/predict", {   // ✅ Render backend
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
 
-      const data = await response.json();
-      setResults(data);
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    } finally {
-      setLoading(false);
-    }
+    const data = await res.json();
+    setResults(data);
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <input
-        type="file"
-        accept="image/*"
-        onChange={(e) => setFile(e.target.files[0])}
-      />
-      <button
-        type="submit"
-        disabled={loading}
-        className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
-      >
-        {loading ? "Predicting..." : "Upload & Predict"}
+      <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+      <button type="submit" className="bg-green-600 text-white p-2 rounded">
+        Predict
       </button>
     </form>
   );

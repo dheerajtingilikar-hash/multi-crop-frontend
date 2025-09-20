@@ -9,19 +9,18 @@ function Login({ setIsLoggedIn }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("https://multi-crop-plant.onrender.com/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ username, password }),
-     });
-
+      const res = await fetch("https://multi-crop-plant.onrender.com/login", {   // ✅ Render backend
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ username, password }),
+      });
 
       if (!res.ok) throw new Error("Login failed");
 
       const data = await res.json();
       localStorage.setItem("token", data.access_token); // ✅ Save token
-      setIsLoggedIn(true); // ✅ Update state
-      navigate("/dashboard"); // ✅ Redirect to dashboard
+      setIsLoggedIn(true);
+      navigate("/dashboard");
     } catch (err) {
       alert("Invalid credentials");
     }
