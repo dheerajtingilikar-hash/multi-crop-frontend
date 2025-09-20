@@ -9,7 +9,7 @@ function Register({ setIsLoggedIn }) {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("https://multi-crop-backend.onrender.com/register", {
+      const res = await fetch("https://multi-crop-backend.onrender.com", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),

@@ -9,7 +9,7 @@ function Login({ setIsLoggedIn }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("https://multi-crop-backend.onrender.com/login", {
+      const res = await fetch("https://multi-crop-backend.onrender.com", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ username, password }),
