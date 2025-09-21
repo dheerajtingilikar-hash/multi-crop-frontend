@@ -14,6 +14,14 @@ function Login({ setIsLoggedIn }) {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ username, password }),
       });
+const handleLogin = (e) => {
+  e.preventDefault();
+
+  // 🚀 Skip backend validation and directly login
+  localStorage.setItem("token", "dummy-token");
+  setIsLoggedIn(true);
+  navigate("/dashboard");
+};
 
       if (!res.ok) {
         alert("Invalid credentials");
