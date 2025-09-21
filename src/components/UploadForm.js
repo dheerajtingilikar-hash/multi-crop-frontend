@@ -11,7 +11,7 @@ function UploadForm({ setResults }) {
     formData.append("file", file);
 
     try {
-      const res = await fetch("https://multi-crop-plant.onrender.com/predict", {
+      const res = await fetch("https://multi-crop-plant.vercel.app/predict", {
         method: "POST",
         body: formData,
       });
